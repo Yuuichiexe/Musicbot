@@ -30,10 +30,11 @@ def private_panel(_):
         ],
         [
             InlineKeyboardButton(text=_["S_B_70"], callback_data="exp_helper"),
-            InlineKeyboardButton(text=_["S_B_7"], callback_data="source_helper"),   
+            InlineKeyboardButton(text=_["F_1"], callback_data="settings_back_helper"),
+            InlineKeyboardButton(text=_["F_2"], callback_data="ai_features"),
         ],
         [
-            InlineKeyboardButton(text=_["S_B_4"], callback_data="Noah_features"),
+            InlineKeyboardButton(text=_["S_B_69"], url=f"https://t.me/EonixCore"),   
         ],
     ]
     return buttons
@@ -66,6 +67,3 @@ def feature_panel(_):
         ],
     ]
     return buttons
-
-
-                                 
