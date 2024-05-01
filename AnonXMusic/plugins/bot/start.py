@@ -25,10 +25,10 @@ from config import BANNED_USERS
 from strings import get_string
 
 START_IMG_URL = (
-"",
-"https://telegra.ph/file/f658925a255bea26efaa4.jpg",
-"https://telegra.ph/file/235e4c7e9dd0c48bac638.jpg",
-
+"https://telegra.ph/file/cb0a4e3b21dabc5aeb90f.jpg",
+"https://telegra.ph/file/76fd884cbf55223f7b2ce.jpg",
+"https://telegra.ph/file/486058b0f90e36f38fba0.jpg",
+"https://telegra.ph/file/0bb36ba94c0c90e5d1963.jpg",
 )
 
 
