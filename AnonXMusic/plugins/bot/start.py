@@ -1,4 +1,5 @@
 import time
+import random
 
 from pyrogram import filters
 from pyrogram.enums import ChatType
@@ -22,6 +23,13 @@ from AnonXMusic.utils.formatters import get_readable_time
 from AnonXMusic.utils.inline import help_pannel, private_panel, start_panel
 from config import BANNED_USERS
 from strings import get_string
+
+START_IMG_URL = (
+"",
+"https://telegra.ph/file/f658925a255bea26efaa4.jpg",
+"https://telegra.ph/file/235e4c7e9dd0c48bac638.jpg",
+
+)
 
 
 @app.on_message(filters.command(["start"]) & filters.private & ~BANNED_USERS)
@@ -84,7 +92,7 @@ async def start_pm(client, message: Message, _):
     else:
         out = private_panel(_)
         await message.reply_photo(
-            photo=config.START_IMG_URL,
+            photo=random.choice(START_IMG_URL),
             caption=_["start_2"].format(message.from_user.mention, app.mention),
             reply_markup=InlineKeyboardMarkup(out),
         )
