@@ -11,6 +11,7 @@ from youtubesearchpython.__future__ import VideosSearch
 from AnonXMusic import app, LOGGER
 from config import YOUTUBE_IMG_URL
 
+
 def changeImageSize(maxWidth, maxHeight, image):
     widthRatio = maxWidth / image.size[0]
     heightRatio = maxHeight / image.size[1]
@@ -19,15 +20,17 @@ def changeImageSize(maxWidth, maxHeight, image):
     newImage = image.resize((newWidth, newHeight))
     return newImage
 
-def circle(img): 
-     h,w=img.size 
-     a = Image.new('L', [h,w], 0) 
-     b = ImageDraw.Draw(a) 
-     b.pieslice([(0, 0), (h,w)], 0, 360, fill = 255, outline = "white") 
-     c = np.array(img) 
-     d = np.array(a) 
-     e = np.dstack((c, d)) 
-     return Image.fromarray(e)
+
+def circle(img):
+    h, w = img.size
+    a = Image.new("L", [h, w], 0)
+    b = ImageDraw.Draw(a)
+    b.pieslice([(0, 0), (h, w)], 0, 360, fill=255, outline="white")
+    c = np.array(img)
+    d = np.array(a)
+    e = np.dstack((c, d))
+    return Image.fromarray(e)
+
 
 def clear(text):
     lst = text.split(" ")
@@ -36,6 +39,7 @@ def clear(text):
         if len(title) + len(i) < 60:
             title += " " + i
     return title.strip()
+
 
 async def get_thumb(videoid, user_id, chat_id):
     if os.path.isfile(f"cache/{videoid}_{user_id}.png"):
@@ -71,14 +75,14 @@ async def get_thumb(videoid, user_id, chat_id):
                     f = await aiofiles.open(f"cache/thumb{videoid}.png", mode="wb")
                     await f.write(await resp.read())
                     await f.close()
-        
+
         # Download user's profile picture
         try:
             user_profile_pic = await app.get_chat(user_id)
             user_pic_path = f"cache/user_{user_id}.jpg"
             await app.download_media(user_profile_pic.photo.big_file_id, file_name=user_pic_path)
         except:
-            user_pic_path = "AnonXMusic/utils/unknown.jpg"  # Provide a default profile picture path if unable to get user's profile pic
+            user_pic_path = "AnonXMusic/utils/unknown.jpg"  # Default profile picture
 
         user_pic = Image.open(user_pic_path)
         user_pic_resized = changeImageSize(190, 190, circle(user_pic))
@@ -89,35 +93,39 @@ async def get_thumb(videoid, user_id, chat_id):
             group_pic_path = f"cache/group_{chat_id}.jpg"
             await app.download_media(group_photo.photo.big_file_id, file_name=group_pic_path)
         except:
-            group_photo = await app.get_chat(app.id)
-            group_pic_path = f"cache/group_{app.id}.jpg"
-            await app.download_media(group_photo.photo.big_file_id, file_name=group_pic_path)
-          # Provide a default group picture path if unable to get group's photo
+            group_pic_path = "AnonXMusic/utils/default_group.jpg"  # Default group picture
 
         group_pic = Image.open(group_pic_path)
         group_pic_resized = changeImageSize(352, 352, circle(group_pic))
-        
+
         youtube = Image.open(f"cache/thumb{videoid}.png")
         bg = Image.open("AnonXMusic/assets/gcpfp.png")
         image1 = changeImageSize(1280, 720, youtube)
         image2 = image1.convert("RGBA")
-        background = image2.filter(filter=ImageFilter.BoxBlur(12))
+        background = image2.filter(ImageFilter.BoxBlur(12))
         enhancer = ImageEnhance.Brightness(background)
         background = enhancer.enhance(0.7)
 
         image3 = changeImageSize(1280, 720, bg)
         image5 = image3.convert("RGBA")
-        image5 = image5.filter(ImageFilter.GaussianBlur(radius=0.2))  # Apply Gaussian Blur for enhancement
-        
-        background.paste(group_pic_resized, (47, 154), mask=group_pic_resized)
-        background.paste(image5, (0, 0), mask=image5)
-        background.paste(user_pic_resized, (289, 401), mask=user_pic_resized)
-        
+        image5 = image5.filter(ImageFilter.GaussianBlur(radius=0.2))
+
+        # Draw a rectangular background for profile pics
         draw = ImageDraw.Draw(background)
+        rect_bg_color = (0, 0, 0, 130)  # Semi-transparent black
+        draw.rectangle([(30, 130), (440, 580)], fill=rect_bg_color, outline="white", width=2)
+
+        background.paste(group_pic_resized, (50, 150), mask=group_pic_resized)
+        background.paste(user_pic_resized, (290, 400), mask=user_pic_resized)
+
+        background.paste(image5, (0, 0), mask=image5)
+
+        # Draw text
         arial = ImageFont.truetype("AnonXMusic/assets/title.ttf", 35)
         dur = ImageFont.truetype("AnonXMusic/assets/title.ttf", 30)
         onfont = ImageFont.truetype("AnonXMusic/assets/font.ttf", 30)
         font = ImageFont.truetype("AnonXMusic/assets/Cloudb.otf", 38)
+
         draw.text((1047, 10), unidecode(app.name), fill="white", font=onfont)
         draw.text(
             (540, 308),
@@ -149,6 +157,7 @@ async def get_thumb(videoid, user_id, chat_id):
             (255, 255, 255),
             font=dur,
         )
+
         try:
             os.remove(f"cache/thumb{videoid}.png")
         except:
