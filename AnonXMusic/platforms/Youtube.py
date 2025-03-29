@@ -122,6 +122,8 @@ class YouTubeAPI:
             link = link.split("&")[0]
         proc = await asyncio.create_subprocess_exec(
             "yt-dlp",
+            "--cookies",
+            "cookies.txt",
             "-g",
             "-f",
             "best[height<=?720][width<=?1280]",
@@ -333,8 +335,6 @@ class YouTubeAPI:
             else:
                 proc = await asyncio.create_subprocess_exec(
                     "yt-dlp",
-                    "--cookies",
-                    "cookies.txt",
                     "-g",
                     "-f",
                     "best[height<=?720][width<=?1280]",
